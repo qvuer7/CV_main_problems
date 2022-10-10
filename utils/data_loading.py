@@ -1,13 +1,14 @@
 import os
 import cv2
 import numpy as np
-import torch
 from torch.utils.data import Dataset
 import matplotlib.pyplot as plt
-import pandas as pd
 from sklearn.model_selection import train_test_split
 import albumentations as A
-from torchvision import transforms
+from torch.utils.data import DataLoader
+from config import *
+import pandas as pd
+
 
 
 
@@ -42,6 +43,37 @@ class segmentationDataset(Dataset):
         image = image / 255.0
 
         return image, mask
+
+def get_transforms():
+    train_transform = A.Compose([
+        A.LongestMaxSize(IMAGE_HEIGH),
+        A.HorizontalFlip(p=0.5)
+
+    ])
+
+    test_transform = A.Compose([
+        A.LongestMaxSize(IMAGE_HEIGH)
+    ])
+
+    return train_transform, test_transform
+
+
+def get_data_loaders():
+
+    annotations = os.listdir(ANNOTATIONS_PATH)
+    images = os.listdir(IMAGES_PATH)
+    images_full = list(map(lambda x: IMAGES_PATH + x, images))
+    annotations_full = list(map(lambda x: ANNOTATIONS_PATH + x, annotations))
+    images_full.sort()
+    annotations_full.sort()
+    dataset_df = pd.DataFrame({'images': images_full, 'masks': annotations_full})
+    train_df, test_df = train_test_split(dataset_df, train_size=TRAIN_RATIO, shuffle=False)
+    train_transform, test_transform = get_transforms()
+    train_ds = segmentationDataset(train_df, train_transform)
+    test_ds = segmentationDataset(test_df, test_transform)
+    train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE)
+    test_loader = DataLoader(test_ds, batch_size=BATCH_SIZE)
+    return train_loader, test_loader
 
 
 def test():
