@@ -14,7 +14,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr = LR)
 train_loss = train_one_epoch(model = model, criterion = criterion, optimizer = optimizer, dataLoader = train_loader)
 print('one epoch trained created')
 print(train_loss)
-
+#pip install opencv-python==4.5.5.64
 
 '''
 

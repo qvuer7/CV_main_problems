@@ -1,7 +1,7 @@
 from tqdm import tqdm
 from config import *
 import numpy as np
-from torch.utils.tensorboard import SummaryWriter
+
 
 def train_one_epoch(model, criterion, optimizer, dataLoader):
     model.train()
