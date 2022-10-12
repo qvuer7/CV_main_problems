@@ -1,54 +1,22 @@
-from torchvision import models
-from utils.data_loading import segmentationDataset
-from sklearn.model_selection import train_test_split
-import os
-import albumentations as A
-import pandas as pd
-from torch.utils.data import DataLoader
-from torchvision.models.segmentation.deeplabv3 import DeepLabHead
-from tqdm import tqdm
+from utils.data_loading import get_data_loaders
+from utils.trainers import train_one_epoch
+from utils.models import get_deep_lab_v3
 import torch
-import time
-
-data_path = 'data_segmentation/'
-images_path = data_path + 'images/'
-annotations_path = data_path + 'annotations/'
-annotations = os.listdir(annotations_path)
-images = os.listdir(images_path)
-images_full = list(map(lambda x: images_path + x, images))
-annotations_full = list(map(lambda x: annotations_path + x, annotations))
-images_full.sort()
-annotations_full.sort()
-dataset_df = pd.DataFrame({'images': images_full, 'masks': annotations_full})
-train_df, test_df = train_test_split(dataset_df, train_size=0.85, shuffle=False)
-image_heigh = 512
-image_width = 512
+from config import *
 
 
-train_transform = A.Compose([
-    A.LongestMaxSize(image_heigh),
-    A.HorizontalFlip(p=0.5)
-
-])
-
-test_transform = A.Compose([
-    A.Resize(image_heigh, image_width)
-])
-
-
-train_ds = segmentationDataset(train_df, train_transform)
-test_ds = segmentationDataset(test_df, test_transform)
-train_loader = DataLoader(train_ds, batch_size=2)
-test_loader = DataLoader(test_ds, batch_size = 2)
+train_loader, val_loader = get_data_loaders()
+print('train loaders created')
+model = get_deep_lab_v3()
+print('model created')
+criterion = torch.nn.MSELoss(reduction = 'mean')
+optimizer = torch.optim.Adam(model.parameters(), lr = LR)
+train_loss = train_one_epoch(model = model, criterion = criterion, optimizer = optimizer, dataLoader = train_loader)
+print('one epoch trained created')
+print(train_loss)
 
 
-model = models.segmentation.deeplabv3_resnet50(pretrained = True, progress = True)
-
-for parameter in model.parameters():
-    parameter.requires_grad = False
-
-model.classifier = DeepLabHead(2048, 1)
-
+'''
 
 for i,(image, mask) in enumerate(train_loader):
     break
@@ -117,7 +85,7 @@ print(train_loss)
 
 
 
-
+'''
 
 
 

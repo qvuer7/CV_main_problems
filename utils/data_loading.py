@@ -23,8 +23,6 @@ class segmentationDataset(Dataset):
 
     def __getitem__(self, x):
         image_path, mask_path = self.dataFrame.iloc[x].images, self.dataFrame.iloc[x].masks
-        print(image_path)
-        print(mask_path)
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
