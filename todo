@@ -8,3 +8,9 @@
           criterion = criterion
           train(loaders)
 -figure out tensorboard*****
+
+13.10.2022
+-train deep lab using train() function, evaluate and check results
+-research on segmentation metrics
+-add metrics for segmentation training(IoU etc...)
+-understend deep_lab_v3 achitecture!!!
