@@ -43,6 +43,6 @@ def train(model, criterion,optimizer, trainDataLoader, testDataLoader):
         print(f'validation loss:    {val_loss}')
         if best_loss > val_loss:
             best_loss = val_loss
-            torch.save(model.state_dict(), CHECKPOINTS_PAHT)
+            torch.save(model.state_dict(), CHECKPOINTS_PATH + 'checkpoint_' + str(epoch) + '.pth')
 
     writer.flush()

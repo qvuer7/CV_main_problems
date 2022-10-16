@@ -42,7 +42,7 @@ class segmentationDataset(Dataset):
 
         return image, mask
 
-def get_transforms():
+def get_segmentation_transforms():
     train_transform = A.Compose([
         A.LongestMaxSize(IMAGE_HEIGH),
         A.HorizontalFlip(p=0.5)
@@ -56,7 +56,7 @@ def get_transforms():
     return train_transform, test_transform
 
 
-def get_data_loaders():
+def get_segmentation_data_loaders():
 
     annotations = os.listdir(ANNOTATIONS_PATH)
     images = os.listdir(IMAGES_PATH)
@@ -66,7 +66,7 @@ def get_data_loaders():
     annotations_full.sort()
     dataset_df = pd.DataFrame({'images': images_full, 'masks': annotations_full})
     train_df, test_df = train_test_split(dataset_df, train_size=TRAIN_RATIO, shuffle=False)
-    train_transform, test_transform = get_transforms()
+    train_transform, test_transform = get_segmentation_transforms()
     train_ds = segmentationDataset(train_df, train_transform)
     test_ds = segmentationDataset(test_df, test_transform)
     train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE)
@@ -74,7 +74,7 @@ def get_data_loaders():
     return train_loader, test_loader
 
 
-def test():
+def test_segmentation():
     data_path = 'data_segmentation/'
     images_path = data_path + 'images/'
     annotations_path = data_path + 'annotations/'
@@ -118,4 +118,4 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    test_segmentation()

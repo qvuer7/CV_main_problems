@@ -13,6 +13,6 @@ ANNOTATIONS_PATH = '/content/drive/MyDrive/Photos data/data_segmentation/annotat
 TRAIN_RATIO = 0.85
 LOG_DIR = '/content/CV_main_problems/logs/'
 N_CLASSES = 2
-CHECKPOINTS_PAHT = '/content/CV_main_problems/checkpoints/'
+CHECKPOINTS_PATH = '/content/CV_main_problems/checkpoints/'
 writer = SummaryWriter()
 
