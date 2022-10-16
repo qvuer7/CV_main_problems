@@ -1,11 +1,39 @@
 from torchvision import models
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as et
+import os
+from config import *
 
+
+
+
+label_path = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_detection/test_zip/test/apple_77.xml'
+tree = et.parse(label_path)
+
+root = tree.getroot()
+labels = []
+boxes = []
+for member in root.findall('object'):
+    labels.append(member.find('name').text)
+    xmin = int(member.find('bndbox').find('xmin').text)
+    # xmax = right corner x-coordinates
+    xmax = int(member.find('bndbox').find('xmax').text)
+    # ymin = left corner y-coordinates
+    ymin = int(member.find('bndbox').find('ymin').text)
+    # ymax = right corner y-coordinates
+    ymax = int(member.find('bndbox').find('ymax').text)
+    boxes.append([xmin, ymin, xmax, ymax])
+
+
+print(CHECKPOINTS_PATH)
+
+
+
+model = models.detection.fasterrcnn_resnet50_fpn(pretrained = True, n_classes  = 2)
+epoch = 12
+torch.save(model.state_dict(), CHECKPOINTS_PATH + 'checkpoint_' + str(epoch) + '.pt')
 
 
 '''
-model = models.detection.fasterrcnn_resnet50_fpn(pretrained = True, n_classes  = 2)
-
 
 #pytorch_total_params = sum(p.numel() for p in model.parameters())
 

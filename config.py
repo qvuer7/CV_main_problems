@@ -13,6 +13,6 @@ ANNOTATIONS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_segm
 TRAIN_RATIO = 0.85
 LOG_DIR = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_segmentation/logs/'
 N_CLASSES = 2
-CHECKPOINTS_PATH = '/Users/andrii/qvuer7/projects/CV_main_tasks/data_segmentation/checkpoints/'
+CHECKPOINTS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/'
 writer = SummaryWriter()
 
