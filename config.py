@@ -3,7 +3,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 
 # 1 - segmentation | 2 - detection | 3 - instance segmentation | 4 - keypoints detection
-TASK = 2
+TASK = 1
 
 #----------------------GENERAL TRAINING CONFIGURATIONS-------------------------#
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
