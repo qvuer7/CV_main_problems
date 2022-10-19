@@ -247,7 +247,7 @@ def inference_deep_lab(image_m, checkpoint_path, threshold):
     image = image_m.clone().detach()
     image = image.unsqueeze(0)
     image = image.to(DEVICE)
-    model = get_deep_lab_v3()
+    model, _ = get_deep_lab_v3()
     model.load_state_dict(torch.load(checkpoint_path, map_location=DEVICE))
     model = model.to(DEVICE)
     model.eval()
