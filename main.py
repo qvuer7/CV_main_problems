@@ -9,5 +9,8 @@ model, params = get_faster_rcnn()
 
 optimizer = torch.optim.SGD(params, lr=0.001, momentum=0.9, weight_decay=0.0005)
 
-train_detector(model = model, trainLoader = train_loader, testLoader = test_loader, optimizer = optimizer)
+#train_detector(model = model, trainLoader = train_loader, testLoader = test_loader, optimizer = optimizer)
 
+
+c = validate_one_epoch_detection(model = model, dataLoader = test_loader)
+print(c)

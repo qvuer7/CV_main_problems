@@ -9,12 +9,12 @@ TASK = 2
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 writer = SummaryWriter()
 NUM_EPOCHS = 20
-BATCH_SIZE = 2
+BATCH_SIZE = 4
 LR = 0.01
 IMAGE_HEIGH = 512
 IMAGE_WIDTH = 512
 TRAIN_RATIO = 0.85
-CHECKPOINTS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/'
+CHECKPOINTS_PATH = '/content/CV_main_problems/checkpoints/'
 N_CLASSES = 2
 
 #--------PARTICULAR TRAININT CONFIGURATIONS FOR EACH INDIVIDUAL TASK------------#

@@ -28,13 +28,13 @@ def train_one_epoch_detection(model, dataLoader, optimizer):
     return total_loss/i
 
 def validate_one_epoch_detection(model, dataLoader):
-    model.eval()
     total_loss = 0
     for i, data in enumerate(tqdm(dataLoader)):
         images, targets = data
         images = list(image.to(DEVICE) for image in images)
         targets = [{k:v.to(DEVICE) for k,v in t.items()} for t in targets]
-        loss_dict = model(images, targets)
+        with torch.no_grad():
+            loss_dict = model(images, targets)
         losses = sum(loss for loss in loss_dict.values())
         total_loss+=losses.item()*BATCH_SIZE
     return total_loss/i
