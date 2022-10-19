@@ -1,0 +1,21 @@
+10.10.2022
+-check if all imports from data_loading.py and trainers works fine
+-create unique abstract function train() which takes arguments from config/dataloaders
+    planned structure for now:
+            from config import *
+          (loaders) = get_loaders()
+          optimizer = optimizer
+          criterion = criterion
+          train(loaders)
+-figure out tensorboard*****
+
+13.10.2022
+-train deep lab using train() function, evaluate and check results
+-research on segmentation metrics
+-add metrics for segmentation training(IoU etc...)
+-understend deep_lab_v3 achitecture!!!
+
+
+19.19.2022
+-train detector on collab
+-create function for segmenter inferencing using sigmoid
