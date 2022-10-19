@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 
 
@@ -34,6 +34,17 @@ def draw_bounding_box_from_ITtensor(image, target, label_map):
     image = image.transpose((1,2,0))
     image = draw_bounding_box_from_Ttensor(image = image, target = target, label_map = label_map)
     return image
+
+
+def vizualize_segmentation_output(image_ori, mask_ori, mask):
+    image_ori = image_ori.numpy()
+    image_ori = image_ori.transpose((1, 2, 0))
+    mask_ori = mask_ori.numpy().squeeze()
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 12))
+    ax1.imshow(image_ori)
+    ax2.imshow(mask_ori)
+    ax3.imshow(mask)
+    plt.show()
 
 
 

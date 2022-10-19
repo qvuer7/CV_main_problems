@@ -10,7 +10,7 @@ from config import *
 import pandas as pd
 import xml.etree.ElementTree as et
 from utils.vizualisation import *
-
+from utils.models import *
 #----------------------------------------------------------------------
 #
 #
@@ -234,6 +234,35 @@ def test_segmentation():
         break
     print(image.shape)
     print(mask.shape)
+
+
+def inference_deep_lab(image_m, checkpoint_path, threshold ):
+
+    ''' EXAMPLE
+    train_df, test_df = get_dataframes()
+    _, test_transforms = get_segmentation_transforms()
+    dataset = segmentationDataset(dataFrame = test_df, transform = test_transforms)
+    image, mask = dataset[1]
+    output_mask = inference_deep_lab(image_m = image, checkpoint_path = 'custom/checkpoint/path, threshold = custom.threshold)
+    vizualize_segmentation_output(image_ori = image, mask_ori = mask, mask = output_mask)
+    '''
+
+
+    if threshold>1:
+        threshold/=100
+    image = image_m.clone().detach()
+    image = image.unsqueeze(0)
+    image = image.to(DEVICE)
+    model = get_deep_lab_v3()
+    model.load_state_dict(torch.load(checkpoint_path, map_location=DEVICE))
+    model = model.to(DEVICE)
+    model.eval()
+    output = model(image)["out"][0]
+    output = torch.sigmoid(output)
+    output = (output > threshold)*1.0
+    output = output.cpu().numpy()
+    output = np.where(output[0] == 1 , 1, 0)
+    return output
 # ----------------------------------------------------------------------
 #
 #

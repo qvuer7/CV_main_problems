@@ -14,3 +14,8 @@
 -research on segmentation metrics
 -add metrics for segmentation training(IoU etc...)
 -understend deep_lab_v3 achitecture!!!
+
+
+19.19.2022
+-train detector on collab
+-create function for segmenter inferencing using sigmoid
