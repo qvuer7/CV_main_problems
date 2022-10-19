@@ -25,9 +25,6 @@ for member in root.findall('object'):
 
 
 print(CHECKPOINTS_PATH)
-
-
-
 model = models.detection.fasterrcnn_resnet50_fpn(pretrained = True, n_classes  = 2)
 epoch = 12
 torch.save(model.state_dict(), CHECKPOINTS_PATH + 'checkpoint_' + str(epoch) + '.pt')
