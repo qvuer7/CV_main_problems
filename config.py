@@ -3,7 +3,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 
 # 1 - segmentation | 2 - detection | 3 - instance segmentation | 4 - keypoints detection
-TASK = 2
+TASK = 3
 
 #----------------------GENERAL TRAINING CONFIGURATIONS-------------------------#
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
@@ -30,5 +30,12 @@ if TASK == 2:
     IMAGES_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_detection/images/'
     ANNOTATIONS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_detection/annotations/'
     LOG_DIR = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_detection/logs/'
-    CHECKPOINT_FOR_INFERENCE = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/segmentation/checkpoint_18.pth'
+    CHECKPOINT_FOR_INFERENCE = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/detection/checkpoint_detector.pth'
     LABELS_MAP= {'apple':0, 'banana':1, 'orange':2}
+
+if TASK == 3:
+    IMAGES_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_instance_segmentation/PNGImages/'
+    ANNOTATIONS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_instance_segmentation/Annotation/'
+    MASKS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_instance_segmentation/PedMasks/'
+    LOG_DIR = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_detection/logs/'
+    CHECKPOINT_FOR_INFERENCE = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/detection/checkpoint_detector.pth'

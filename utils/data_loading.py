@@ -11,7 +11,38 @@ from utils.models import *
 from utils.vizualisation import *
 from config import *
 
+# ----------------------------------------------------------------------
+#
+#
+#                   INSTANCE SEGMENTATIONS UTILS
+#
+#
+# ----------------------------------------------------------------------
 
+def get_instance_segmentation_dataframes():
+    images = sorted(os.listdir(IMAGES_PATH))
+    annotations = sorted(os.listdir(ANNOTATIONS_PATH))
+    masks = sorted(os.listdir(MASKS_PATH))
+
+    images_full = list(map(lambda x: IMAGES_PATH + x, images))
+    annotations_full = list(map(lambda x: ANNOTATIONS_PATH + x, annotations))
+    masks_full = list(map(lambda x: MASKS_PATH + x, masks))
+    dataset_df = pd.DataFrame({'image': images_full, 'annotation': annotations_full, 'label': masks_full})
+    train_df, test_df = train_test_split(dataset_df, train_size = TRAIN_RATIO, shuffle = False)
+    return train_df, test_df
+
+def parse_pedd_fudan_annotation(annotation):
+
+    with open(annotation) as f:
+        lines = f.readlines()
+
+    num_objects = int(lines[4][28])
+    box_lines_general =  [i for i in range(10,49,5)]
+    box_lines_specific = box_lines_general[:num_objects]
+    boxes_lines = list(map(lines.__getitem__, box_lines_specific))
+    boxes = list(map(lambda x: x[75:97].replace('\n', '').replace('(', '').replace(')', '').replace('-', '').replace(',', '').split(), boxes_lines))
+    boxes = list(map(lambda x: list(map(lambda y: int(y), x)), boxes))
+    return boxes
 # ----------------------------------------------------------------------
 #
 #
