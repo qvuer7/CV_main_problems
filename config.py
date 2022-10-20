@@ -16,6 +16,7 @@ IMAGE_WIDTH = 512
 TRAIN_RATIO = 0.85
 CHECKPOINTS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/'
 N_CLASSES = 2
+THRESHOLD = 0.65
 
 #--------PARTICULAR TRAININT CONFIGURATIONS FOR EACH INDIVIDUAL TASK------------#
 #-------------segmentation-----------#
@@ -24,7 +25,6 @@ if TASK == 1:
     ANNOTATIONS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_segmentation/annotations/'
     LOG_DIR = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_segmentation/logs/'
     CHECKPOINT_FOR_INFERENCE = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/segmentation/checkpoint_18.pth'
-    THRESHOLD = 0.65
 #--------------detection-------------
 if TASK == 2:
     IMAGES_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_detection/images/'

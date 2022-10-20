@@ -9,6 +9,7 @@ from torch.utils.data import Dataset
 
 from utils.models import *
 from utils.vizualisation import *
+from config import *
 
 
 # ----------------------------------------------------------------------
@@ -143,6 +144,37 @@ def test_detection():
     cv2.waitKey(0)
 
 
+def inference_faster_rcnn(checkpoint_path, image_ori, threshold=THRESHOLD):
+    if threshold > 1:
+        threshold/=100
+    model, _ = get_faster_rcnn()
+    image = image_ori.clone()
+    image = image.unsqueeze(0)
+    model.load_state_dict(torch.load(checkpoint_path, map_location=DEVICE))
+    model.eval()
+    image = image.to(DEVICE)
+    model = model.to(DEVICE)
+    with torch.no_grad():
+        output = model(image)
+    output = output[0]
+    mask = output['scores'] > threshold
+    for k, v in output.items():
+        output[k] = v[mask]
+
+    ''' USAGE EXAMPLE
+    image = draw_bounding_box_from_ITtensor(image_s = image_ori, target = output, label_map=LABELS_MAP)
+    image_2 = draw_bounding_box_from_ITtensor(image_s = image_ori, target = target, label_map = LABELS_MAP)
+    fig, (ax1, ax2) = plt.subplots(1,2)
+    ax1.imshow(image_2)
+    ax1.set_title('original image')
+    ax2.imshow(image)
+    ax2.set_title('output from detector')
+    plt.show()
+
+    '''
+    return output
+
+
 # ----------------------------------------------------------------------
 #
 #
@@ -232,7 +264,7 @@ def test_segmentation():
     print(mask.shape)
 
 
-def inference_deep_lab(image_m, checkpoint_path, threshold):
+def inference_deep_lab(image_m, checkpoint_path, threshold = THRESHOLD) :
     ''' EXAMPLE
     train_df, test_df = get_dataframes()
     _, test_transforms = get_segmentation_transforms()

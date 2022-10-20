@@ -28,7 +28,8 @@ def draw_bounding_box_from_Ttensor(image, target, label_map):
     return image
 
 
-def draw_bounding_box_from_ITtensor(image, target, label_map):
+def draw_bounding_box_from_ITtensor(image_s, target, label_map):
+    image = image_s.clone()
     image = np.asarray(image)
     image = image.transpose((1, 2, 0))
     image = draw_bounding_box_from_Ttensor(image=image, target=target, label_map=label_map)

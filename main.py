@@ -4,43 +4,33 @@ from utils.models import *
 import torch
 from utils.vizualisation import *
 import cv2
+from torch import tensor
+from config import *
+import matplotlib.pyplot as plt
+
+
+
+
+
 
 checkpoint_path = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/detection/checkpoint_detector.pth'
 
 train_df, test_df = get_dataframes()
-print(train_df)
 train_transform, test_transform = get_detection_transforms()
-md = DetectionDataset(test_df, transform = test_transform ,labels_map = LABELS_MAP)
-image_ori, target = md[5]
-
-image = image_ori.clone()
-image = image.unsqueeze(0)
-
-model, _ = get_faster_rcnn()
-model.load_state_dict(torch.load(checkpoint_path, map_location=DEVICE))
-
-model.eval()
-
-image = image.to(DEVICE)
-model = model.to(DEVICE)
-with torch.no_grad():
-    output = model(image)
+md = DetectionDataset(train_df, transform = test_transform ,labels_map = LABELS_MAP)
+image_ori, target = md[200]
 
 
-output = output[0]
-
-image = draw_bounding_box_from_ITtensor(image = image_ori, target = output, label_map=LABELS_MAP)
-print(output)
-cv2.imshow('image', image)
-cv2.waitKey(0)
+output = inference_faster_rcnn(checkpoint_path = checkpoint_path, image_ori = image_ori)
+image = draw_bounding_box_from_ITtensor(image_s=image_ori, target=output, label_map=LABELS_MAP)
+image_2 = draw_bounding_box_from_ITtensor(image_s=image_ori, target=target, label_map=LABELS_MAP)
+fig, (ax1, ax2) = plt.subplots(1, 2)
+ax1.imshow(image_2)
+ax1.set_title('original image')
+ax2.imshow(image)
+ax2.set_title('output from detector')
+plt.show()
 
 
 
-''' EXAMPLE
- train_df, test_df = get_dataframes()
- _, test_transforms = get_segmentation_transforms()
- dataset = segmentationDataset(dataFrame = test_df, transform = test_transforms)
- image, mask = dataset[1]
- output_mask = inference_deep_lab(image_m = image, checkpoint_path = 'custom/checkpoint/path, threshold = custom.threshold)
- vizualize_segmentation_output(image_ori = image, mask_ori = mask, mask = output_mask)
- '''
+
