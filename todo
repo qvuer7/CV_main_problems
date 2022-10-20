@@ -16,6 +16,14 @@
 -understend deep_lab_v3 achitecture!!!
 
 
-19.19.2022
+19.10.2022
 -train detector on collab
 -create function for segmenter inferencing using sigmoid
+
+
+20.10.2022
+-train detector for 3 classes not 2!
+-start working on instance segmentation
+-research on keypoint detection network as well as dataset
+-write docuemntation/paper on how faster rcnn and deep lab working and imlementing training guide!
+
