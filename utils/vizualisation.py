@@ -3,6 +3,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+'''
+EXAMPLE OF INSTANCE SEGMENTATION VIZUALISATION: 
+
+
+train_transforms = A.Compose([
+    A.Resize(IMAGE_HEIGH, IMAGE_WIDTH),
+    A.Flip(p=0.5),
+    A.RandomRotate90(p=1),
+], bbox_params=A.BboxParams(format='pascal_voc'))
+train_df, test_df = get_instance_segmentation_dataframes()
+md = InstanceSegmentationDataset(train_df, LABELS_MAP, transforms = train_transforms)
+
+image, target = md[100]
+image = draw_bounding_box_from_Ttensor(image = image, target = target, label_map = LABELS_MAP)
+f, (ax1, ax2) = plt.subplots(1,2)
+target['masks']*=255
+ax1.imshow(image)
+ax2.imshow(target['masks'])
+plt.show()
+
+
+'''
+
 def draw_bounding_box_from_albumentations(image, box):
     # image -> numpy | box -> list of tumples?
     for i in range(len(box)):

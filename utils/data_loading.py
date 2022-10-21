@@ -19,6 +19,76 @@ from config import *
 #
 # ----------------------------------------------------------------------
 
+
+
+class InstanceSegmentationDataset(Dataset):
+    '''
+    instance segmentation dataset is pretty simmilar to object detection ecept additional mask
+    added to a target output
+    also same transforms could be used as used for detection
+    train_transform, test_transform = get_detection_transforms()
+    '''
+    def __init__(self, dataFrame,  labels_map, transforms = None):
+        super().__init__()
+        self.dataFrame = dataFrame
+        self.transforms = transforms
+        self.labels_map = labels_map
+
+    def __len__(self):
+        return len(self.dataFrame)
+
+    def __getitem__(self, x):
+        image = self.dataFrame.iloc[x].image
+        label = self.dataFrame.iloc[x].label
+        annotation = self.dataFrame.iloc[x].annotation
+
+        image = cv2.imread(image)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = image / 255.0
+        mask = cv2.imread(label, cv2.IMREAD_GRAYSCALE)
+
+
+        boxes =  parse_pedd_fudan_annotation(annotation)
+        boxes_for_transform = []
+        parsed_labels = []
+        for i in range(len(boxes)):
+            box = boxes[i].copy()
+            box.append('Human')
+            parsed_labels.append(1)
+            boxes_for_transform.append(box)
+
+        if self.transforms is not None:
+            data = self.transforms(image = image, mask = mask, bboxes = boxes_for_transform)
+            image = data['image']
+            mask = data['mask']
+            boxes = data['bboxes']
+
+
+
+        obj_ids = np.unique(mask)
+        obj_ids = obj_ids[1:]
+        masks = mask == obj_ids[:, None, None]
+        masks = torch.as_tensor(masks, dtype=torch.uint8)
+        boxes = get_boxes_after_transformations(boxes)
+
+        boxes = torch.as_tensor(boxes, dtype=torch.int64)
+        area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
+        iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int64)
+        labels = torch.as_tensor(parsed_labels, dtype=torch.int64)
+
+        target = {}
+        target['boxes'] = boxes
+        target['area'] = area
+        target['iscrowd'] = iscrowd
+        target['labels'] = labels
+        target['masks'] = masks
+
+        image = image.transpose((2, 0, 1))
+        image = torch.Tensor(image)
+
+
+        return image, target
+
 def get_instance_segmentation_dataframes():
     images = sorted(os.listdir(IMAGES_PATH))
     annotations = sorted(os.listdir(ANNOTATIONS_PATH))
@@ -43,6 +113,17 @@ def parse_pedd_fudan_annotation(annotation):
     boxes = list(map(lambda x: x[75:97].replace('\n', '').replace('(', '').replace(')', '').replace('-', '').replace(',', '').split(), boxes_lines))
     boxes = list(map(lambda x: list(map(lambda y: int(y), x)), boxes))
     return boxes
+
+
+
+def get_instance_segmentation_data_loaders():
+    train_df, test_df = get_instance_segmentation_dataframes()
+    train_transform, test_transform = get_detection_transforms()
+    train_dataset = InstanceSegmentationDataset(dataFrame=train_df, labels_map=LABELS_MAP, transforms=train_transform)
+    test_dataset = InstanceSegmentationDataset(dataFrame=test_df, labels_map=LABELS_MAP, transforms=test_transform)
+    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, collate_fn=collate_fn)
+    test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, collate_fn=collate_fn)
+    return train_loader, test_loader
 # ----------------------------------------------------------------------
 #
 #

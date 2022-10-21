@@ -10,7 +10,7 @@ DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 writer = SummaryWriter()
 NUM_EPOCHS = 20
 BATCH_SIZE = 2
-LR = 0.01
+LR = 0.005
 IMAGE_HEIGH = 512
 IMAGE_WIDTH = 512
 TRAIN_RATIO = 0.85
@@ -39,3 +39,4 @@ if TASK == 3:
     MASKS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_instance_segmentation/PedMasks/'
     LOG_DIR = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_detection/logs/'
     CHECKPOINT_FOR_INFERENCE = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/detection/checkpoint_detector.pth'
+    LABELS_MAP = {'Human':1}

@@ -29,3 +29,23 @@ def get_faster_rcnn():
     return model, params
 
 
+def get_mask_rcnn():
+
+    model = models.detection.maskrcnn_resnet50_fpn(weights="DEFAULT")
+
+    in_features = model.roi_heads.box_predictor.cls_score.in_features
+    model.roi_heads.box_predictor = models.detection.faster_rcnn.FastRCNNPredictor(in_features, N_CLASSES)
+    in_features_mask = model.roi_heads.mask_predictor.conv5_mask.in_channels
+    hidden_layer = 256
+
+    model.roi_heads.mask_predictor = models.detection.mask_rcnn.MaskRCNNPredictor(in_features_mask,
+                                                       hidden_layer,
+                                                       N_CLASSES)
+
+    for param in model.backbone.parameters():
+        param.requires_grad = False
+
+    params = [p for p in model.parameters() if p.requires_grad]
+
+    return model, params
+

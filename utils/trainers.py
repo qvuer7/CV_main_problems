@@ -3,6 +3,62 @@ from config import *
 import numpy as np
 
 
+
+
+#------------------------------------------------------------------------#
+#                                                                        #
+#                                                                        #
+#                   INSTANCE SEGMENTATION TRAINERS                       #
+#                                                                        #
+#                                                                        #
+#------------------------------------------------------------------------#
+
+
+def train_one_epoch_instance(dataLoader, model, optimizer):
+    model.train()
+    total_loss = 0
+    for i, (images, targets) in enumerate(tqdm(dataLoader)):
+        images = list(image.to(DEVICE) for image in images)
+        targets = [{k:v.to(DEVICE) for k, v in t.items()} for t in targets]
+        optimizer.zero_grad()
+        loss_dict = model(images, targets)
+        losses = sum(loss for loss in loss_dict.values())
+        total_loss += losses.item() * BATCH_SIZE
+        losses.backward()
+        optimizer.step()
+
+    return total_loss/i
+
+
+def validate_one_epoch_instance(dataLoader, model):
+    total_loss = 0
+    for i, (images, targets) in enumerate(tqdm(dataLoader)):
+        images = list(image.to(DEVICE) for image in images)
+        targets = [{k:v for k,v in t.items()} for t in targets]
+        with torch.no_grad():
+            loss_dict = model(images, targets)
+        losses = sum(loss for loss in loss_dict.values())
+        total_loss += losses.item() * BATCH_SIZE
+    return total_loss / i
+
+def train_instance(model, trainLoader, testLoader, optimizer):
+    best_val_loss = torch.inf
+    model.to(DEVICE)
+    for epoch in range(NUM_EPOCHS):
+        train_loss = train_one_epoch_instance(trainLoader, model, optimizer)
+        val_loss = validate_one_epoch_instance(testLoader, model)
+        writer.add_scalar("Loss/train", train_loss, epoch)
+        writer.add_scalar("Loss/validation", val_loss, epoch)
+        print('-'*10 + f'epoch {epoch}'+'-'*10)
+        print(f'training loss  :    {train_loss}')
+        print(f'validation loss:    {val_loss}')
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            torch.save(model.state_dict(), CHECKPOINTS_PATH + 'checkpoint_instance_segmentation.pth')
+            print('model_saved')
+
+
+
 #------------------------------------------------------------------------#
 #                                                                        #
 #                                                                        #
