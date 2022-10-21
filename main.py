@@ -15,14 +15,11 @@ from torch.utils.data import Dataset
 import albumentations as A
 
 
+train_df, test_df = get_instance_segmentation_dataframes()
 
+train_t, test_t = get_detection_transforms()
+md = InstanceSegmentationDataset(train_df, train_t)
 
-
-train_dl, test_dl = get_instance_segmentation_data_loaders()
-
-
-model, params = get_mask_rcnn()
-optimizer = torch.optim.SGD(params, lr=LR,
-                                momentum=0.9, weight_decay=0.0005)
-train_instance(model = model, trainLoader = train_dl, testLoader = test_dl, optimizer = optimizer)
-
+for i in range(len(md)):
+    image, data = md[i]
+    pass

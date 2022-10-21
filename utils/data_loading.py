@@ -38,6 +38,7 @@ class InstanceSegmentationDataset(Dataset):
         return len(self.dataFrame)
 
     def __getitem__(self, x):
+
         image = self.dataFrame.iloc[x].image
         label = self.dataFrame.iloc[x].label
         annotation = self.dataFrame.iloc[x].annotation
@@ -110,7 +111,7 @@ def parse_pedd_fudan_annotation(annotation):
     box_lines_general =  [i for i in range(10,49,5)]
     box_lines_specific = box_lines_general[:num_objects]
     boxes_lines = list(map(lines.__getitem__, box_lines_specific))
-    boxes = list(map(lambda x: x[75:97].replace('\n', '').replace('(', '').replace(')', '').replace('-', '').replace(',', '').split(), boxes_lines))
+    boxes = list(map(lambda x: x[75:98].replace('\n', '').replace('(', '').replace(')', '').replace('-', '').replace(',', '').split(), boxes_lines))
     boxes = list(map(lambda x: list(map(lambda y: int(y), x)), boxes))
     return boxes
 
