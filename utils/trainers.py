@@ -34,7 +34,7 @@ def validate_one_epoch_instance(dataLoader, model):
     total_loss = 0
     for i, (images, targets) in enumerate(tqdm(dataLoader)):
         images = list(image.to(DEVICE) for image in images)
-        targets = [{k:v for k,v in t.items()} for t in targets]
+        targets = [{k:v.to(DEVICE) for k,v in t.items()} for t in targets]
         with torch.no_grad():
             loss_dict = model(images, targets)
         losses = sum(loss for loss in loss_dict.values())
