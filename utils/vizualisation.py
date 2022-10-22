@@ -68,3 +68,38 @@ def vizualize_segmentation_output(image_ori, mask_ori, mask):
     ax2.imshow(mask_ori)
     ax3.imshow(mask)
     plt.show()
+
+
+
+def draw_instance_inference_and_original(original_image, original_target, out_target):
+
+    '''
+    checkpoint_path = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/instance_segmentation/checkpoint_instance_segmentation.pth'
+    train_df, test_df = get_instance_segmentation_dataframes()
+    train_t, test_t = get_detection_transforms()
+    md = InstanceSegmentationDataset(test_df, transforms = test_t, labels_map = LABELS_MAP)
+    i = 12
+    image_m, target = md[i]
+    '''
+
+
+
+    out_target['masks'] = out_target['masks'].squeeze(1)
+    masks = np.asarray(out_target['masks'])
+    mask_output = 0
+    for mask in masks:
+        mask = np.array(mask)
+        mask_output+= mask
+
+    mask_original = 0
+    for mask in original_target['masks']:
+        mask = np.array(mask)
+        mask_original+= mask
+    image_model_w_boxes = draw_bounding_box_from_ITtensor(image_s = original_image, target = out_target, label_map = LABELS_MAP)
+    image_original_w_boxes = draw_bounding_box_from_ITtensor(image_s = original_image, target = target, label_map = LABELS_MAP)
+    fig, ((ax1, ax2), (ax3,ax4)) = plt.subplots(2,2, figsize = (14,10))
+    ax1.imshow(image_original_w_boxes)
+    ax2.imshow(image_model_w_boxes)
+    ax3.imshow(mask_original)
+    ax4.imshow(mask_output)
+    plt.show()

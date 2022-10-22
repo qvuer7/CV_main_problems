@@ -125,6 +125,36 @@ def get_instance_segmentation_data_loaders():
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, collate_fn=collate_fn)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, collate_fn=collate_fn)
     return train_loader, test_loader
+
+
+def inference_mask_rcnn(image_m, checkpoint_path, threshold):
+    '''
+
+    checkpoint_path = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/instance_segmentation/checkpoint_instance_segmentation.pth'
+    train_df, test_df = get_instance_segmentation_dataframes()
+    train_t, test_t = get_detection_transforms()
+    md = InstanceSegmentationDataset(test_df, transforms = test_t, labels_map = LABELS_MAP)
+    i = 12
+    image_m, target = md[i]
+
+    '''
+
+    image = image_m.clone().detach()
+    image = image.unsqueeze(0)
+    image = image.to(DEVICE)
+    model, _ = get_mask_rcnn()
+    model.load_state_dict(torch.load(checkpoint_path, map_location=DEVICE))
+    model.eval()
+
+    with torch.no_grad():
+        out = model(image)
+
+    out = out[0]
+    mask = out['scores'] > threshold
+    for k, v in out.items():
+        out[k] = v[mask]
+    return out
+
 # ----------------------------------------------------------------------
 #
 #
