@@ -98,6 +98,7 @@ def validate_one_epoch_detection(model, dataLoader):
 
 def train_detector(model, trainLoader, testLoader, optimizer):
     best_val_loss = torch.inf
+    model.to(DEVICE)
     for epoch in range(NUM_EPOCHS):
         train_loss = train_one_epoch_detection(model = model, dataLoader = trainLoader, optimizer=optimizer)
         val_loss = validate_one_epoch_detection(model = model, dataLoader = testLoader)

@@ -38,5 +38,5 @@ if TASK == 3:
     ANNOTATIONS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_instance_segmentation/Annotation/'
     MASKS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_instance_segmentation/PedMasks/'
     LOG_DIR = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_detection/logs/'
-    CHECKPOINT_FOR_INFERENCE = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/detection/checkpoint_detector.pth'
+    CHECKPOINT_FOR_INFERENCE = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/instance_segmentation/checkpoint_instance_segmentation.pth'
     LABELS_MAP = {'Human':1}

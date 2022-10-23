@@ -1,30 +1,8 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from config import *
 
-
-'''
-EXAMPLE OF INSTANCE SEGMENTATION VIZUALISATION: 
-
-
-train_transforms = A.Compose([
-    A.Resize(IMAGE_HEIGH, IMAGE_WIDTH),
-    A.Flip(p=0.5),
-    A.RandomRotate90(p=1),
-], bbox_params=A.BboxParams(format='pascal_voc'))
-train_df, test_df = get_instance_segmentation_dataframes()
-md = InstanceSegmentationDataset(train_df, LABELS_MAP, transforms = train_transforms)
-
-image, target = md[100]
-image = draw_bounding_box_from_Ttensor(image = image, target = target, label_map = LABELS_MAP)
-f, (ax1, ax2) = plt.subplots(1,2)
-target['masks']*=255
-ax1.imshow(image)
-ax2.imshow(target['masks'])
-plt.show()
-
-
-'''
 
 def draw_bounding_box_from_albumentations(image, box):
     # image -> numpy | box -> list of tumples?
@@ -60,13 +38,29 @@ def draw_bounding_box_from_ITtensor(image_s, target, label_map):
 
 
 def vizualize_segmentation_output(image_ori, mask_ori, mask):
-    image_ori = image_ori.numpy()
-    image_ori = image_ori.transpose((1, 2, 0))
+    image = image_ori.clone()
+    image = image.numpy()
+    image = image.transpose((1, 2, 0))
+    image_to_draw_output = image.copy()
+    image_to_draw_original = image.copy()
     mask_ori = mask_ori.numpy().squeeze()
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 12))
-    ax1.imshow(image_ori)
-    ax2.imshow(mask_ori)
-    ax3.imshow(mask)
+    m1 = np.where(mask_ori == 1)
+    m2 = np.where(mask == 1)
+
+    image_to_draw_output[m2[0], m2[1], 0] = 70
+    image_to_draw_original[m1[0], m1[1], 0] = 70
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2, figsize=(12, 10))
+    fig.suptitle('Segmentation network inference visualisation', fontsize=16)
+    ax1.imshow(image_to_draw_original)
+    ax2.imshow(image_to_draw_output)
+    ax3.imshow(mask_ori)
+    ax4.imshow(mask)
+
+
+    ax1.set_title('original image')
+    ax2.set_title('output image w mask')
+    ax3.set_title('original mask')
+    ax4.set_title('output mask')
     plt.show()
 
 
@@ -82,8 +76,6 @@ def draw_instance_inference_and_original(original_image, original_target, out_ta
     image_m, target = md[i]
     '''
 
-
-
     out_target['masks'] = out_target['masks'].squeeze(1)
     masks = np.asarray(out_target['masks'])
     mask_output = 0
@@ -96,10 +88,29 @@ def draw_instance_inference_and_original(original_image, original_target, out_ta
         mask = np.array(mask)
         mask_original+= mask
     image_model_w_boxes = draw_bounding_box_from_ITtensor(image_s = original_image, target = out_target, label_map = LABELS_MAP)
-    image_original_w_boxes = draw_bounding_box_from_ITtensor(image_s = original_image, target = target, label_map = LABELS_MAP)
+    image_original_w_boxes = draw_bounding_box_from_ITtensor(image_s = original_image, target = original_target, label_map = LABELS_MAP)
     fig, ((ax1, ax2), (ax3,ax4)) = plt.subplots(2,2, figsize = (14,10))
     ax1.imshow(image_original_w_boxes)
     ax2.imshow(image_model_w_boxes)
     ax3.imshow(mask_original)
     ax4.imshow(mask_output)
+    fig.suptitle('Instance segmentation network inference visualisation', fontsize=16)
+    ax1.set_title('Original image w boxes')
+    ax2.set_title('Original image w output boxes')
+    ax3.set_title('Original mask')
+    ax4.set_title('Output mask')
+    plt.show()
+
+
+
+def draw_detection_output(image_ori, output, target):
+
+    image = draw_bounding_box_from_ITtensor(image_s = image_ori, target = output, label_map=LABELS_MAP)
+    image_2 = draw_bounding_box_from_ITtensor(image_s = image_ori, target = target, label_map = LABELS_MAP)
+    fig, (ax1, ax2) = plt.subplots(1,2)
+    fig.suptitle('Detection network inference visualisation', fontsize=16)
+    ax1.imshow(image_2)
+    ax1.set_title('original image')
+    ax2.imshow(image)
+    ax2.set_title('output from detector')
     plt.show()
