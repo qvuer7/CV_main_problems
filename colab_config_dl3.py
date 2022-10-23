@@ -9,13 +9,14 @@ TASK = 2
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 writer = SummaryWriter()
 NUM_EPOCHS = 20
-BATCH_SIZE = 4
-LR = 0.01
+BATCH_SIZE = 8
+LR = 0.005
 IMAGE_HEIGH = 512
 IMAGE_WIDTH = 512
 TRAIN_RATIO = 0.85
 CHECKPOINTS_PATH = '/content/CV_main_problems/checkpoints/'
-N_CLASSES = 2
+N_CLASSES = 3
+THRESHOLD = 0.65
 
 #--------PARTICULAR TRAININT CONFIGURATIONS FOR EACH INDIVIDUAL TASK------------#
 #-------------segmentation-----------#
@@ -24,11 +25,18 @@ if TASK == 1:
     ANNOTATIONS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_segmentation/annotations/'
     LOG_DIR = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_segmentation/logs/'
     CHECKPOINT_FOR_INFERENCE = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/segmentation/checkpoint_18.pth'
-    THRESHOLD = 0.65
 #--------------detection-------------
 if TASK == 2:
-    IMAGES_PATH = '/content/drive/MyDrive/Photos data/data_detection/images/'
-    ANNOTATIONS_PATH = '/content/drive/MyDrive/Photos data/data_detection/annotations/'
-    LOG_DIR = '/content/CV_main_tasks/logs/'
-    CHECKPOINT_FOR_INFERENCE = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/segmentation/checkpoint_18.pth'
+    IMAGES_PATH = '/content/MyDrive/MyDrive/Photos data/data_detection/images/'
+    ANNOTATIONS_PATH = '/content/MyDrive/MyDrive/Photos data/data_detection/annotations/'
+    LOG_DIR = '/content/CV_main_problems/logs/'
+    CHECKPOINT_FOR_INFERENCE = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/detection/checkpoint_detector.pth'
     LABELS_MAP= {'apple':0, 'banana':1, 'orange':2}
+
+if TASK == 3:
+    IMAGES_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_instance_segmentation/PNGImages/'
+    ANNOTATIONS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_instance_segmentation/Annotation/'
+    MASKS_PATH = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_instance_segmentation/PedMasks/'
+    LOG_DIR = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/data_detection/logs/'
+    CHECKPOINT_FOR_INFERENCE = '/Users/andriizelenko/qvuer7/projects/CV_main_tasks/checkpoints/instance_segmentation/checkpoint_instance_segmentation.pth'
+    LABELS_MAP = {'Human':1}

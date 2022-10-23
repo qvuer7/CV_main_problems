@@ -14,7 +14,7 @@ if __name__ == '__main__':
         vizualize_segmentation_output(image_ori = image, mask_ori = mask, mask = output_mask)
 
     if TASK == 2:
-        image_to_infer_N = 13
+        image_to_infer_N = 15
 
         train_df, test_df  = get_dataframes()
         train_t, test_t = get_detection_transforms()

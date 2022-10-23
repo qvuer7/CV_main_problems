@@ -145,7 +145,7 @@ def inference_mask_rcnn(image_m, checkpoint_path, threshold):
     model, _ = get_mask_rcnn()
     model.load_state_dict(torch.load(checkpoint_path, map_location=DEVICE))
     model.eval()
-
+    model.to(DEVICE)
     with torch.no_grad():
         out = model(image)
 
@@ -295,6 +295,7 @@ def inference_faster_rcnn(checkpoint_path, image_ori, threshold=THRESHOLD):
     image = image.unsqueeze(0)
     model.load_state_dict(torch.load(checkpoint_path, map_location=DEVICE))
     model.eval()
+    model.to(DEVICE)
     image = image.to(DEVICE)
     model = model.to(DEVICE)
     with torch.no_grad():
@@ -304,6 +305,7 @@ def inference_faster_rcnn(checkpoint_path, image_ori, threshold=THRESHOLD):
     for k, v in output.items():
         output[k] = v[mask]
 
+    print(output)
     ''' USAGE EXAMPLE
     image = draw_bounding_box_from_ITtensor(image_s = image_ori, target = output, label_map=LABELS_MAP)
     image_2 = draw_bounding_box_from_ITtensor(image_s = image_ori, target = target, label_map = LABELS_MAP)
