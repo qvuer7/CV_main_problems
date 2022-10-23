@@ -4,6 +4,7 @@ from utils.data_loading import *
 
 if __name__ == '__main__':
 
+
     if TASK == 1:
         image_to_infer_N = 12
         train_df, test_df = get_dataframes()
